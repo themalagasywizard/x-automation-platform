@@ -13,6 +13,7 @@
 
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 # Rewrite rule for Next.js app
 [[redirects]]
