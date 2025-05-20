@@ -9,7 +9,7 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Handle all routes
+# Handle all routes for SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
