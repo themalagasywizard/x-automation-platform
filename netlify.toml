@@ -1,36 +1,16 @@
 [build]
   command = "npm run build"
-  publish = ".next"
-  framework = "nextjs"
+  publish = "out"
 
 [build.environment]
-  NETLIFY_NEXT_PLUGIN_SKIP = "false"
-  NEXT_FORCE_EDGE_RUNTIME = "false"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-[[plugins]]
-  package = "@netlify/plugin-functions-install-core"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Handle Next.js assets
-[[redirects]]
-  from = "/_next/static/*"
-  to = "/_next/static/:splat"
-  status = 200
-
-# Handle Next.js data routes
-[[redirects]]
-  from = "/_next/data/*"
-  to = "/_next/data/:splat"
-  status = 200
-
-# Handle all other routes
+# Handle all routes
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/nextjs"
+  to = "/index.html"
   status = 200 
