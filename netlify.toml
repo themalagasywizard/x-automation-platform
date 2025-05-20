@@ -1,9 +1,11 @@
 [build]
   command = "npm run build"
   publish = ".next"
+  framework = "nextjs"
 
 [build.environment]
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
+  NETLIFY_NEXT_PLUGIN_SKIP = "false"
+  NEXT_FORCE_EDGE_RUNTIME = "false"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
@@ -15,17 +17,20 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Rewrite rule for Next.js app
+# Handle Next.js assets
 [[redirects]]
-  from = "/*"
+  from = "/_next/static/*"
   to = "/_next/static/:splat"
   status = 200
-  force = false
-  conditions = {path = ["/_next/static/*"]}
 
-# Fallback rewrite rule
+# Handle Next.js data routes
+[[redirects]]
+  from = "/_next/data/*"
+  to = "/_next/data/:splat"
+  status = 200
+
+# Handle all other routes
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/next_server"
-  status = 200
-  force = false 
+  to = "/.netlify/functions/nextjs"
+  status = 200 
