@@ -4,7 +4,9 @@ import { ProfileCard } from "@/components/profile-card"
 import { UsageStats } from "@/components/usage-stats"
 
 // Mark as client component to use hooks for auth
+// This ensures the page is fully dynamic for auth state
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 export default function ProfilePage() {
   return (
