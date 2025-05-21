@@ -1,16 +1,25 @@
 [build]
   command = "npm run build"
-  publish = ".next/standalone"
+  publish = ".next/server"
 
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "false"
+  NODE_VERSION = "18.x"
   # Set these as placeholders - actual values will be in Netlify environment settings
   NEXT_PUBLIC_SUPABASE_URL = "set-in-netlify-dashboard"
   NEXT_PUBLIC_SUPABASE_ANON_KEY = "set-in-netlify-dashboard"
 
+# Enable Next.js Runtime
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+
+# Include public _next directory
+[[plugins.inputs]]
+  includeFiles = ["_next/**"]
 
 # Handle all routes for Next.js
 [[redirects]]

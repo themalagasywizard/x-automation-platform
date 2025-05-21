@@ -9,6 +9,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Use the Node.js runtime for server components
+  experimental: {
+    serverComponentsExternalPackages: ['@supabase/auth-helpers-nextjs', '@supabase/supabase-js'],
+  },
+  // Required for Netlify deployment with server components
   output: 'standalone',
   trailingSlash: true,
 }
