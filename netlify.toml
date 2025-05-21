@@ -4,7 +4,7 @@
 
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "false"
-  NODE_VERSION = "18.x"
+  NODE_VERSION = "18.19.0"
   # Set these as placeholders - actual values will be in Netlify environment settings
   NEXT_PUBLIC_SUPABASE_URL = "set-in-netlify-dashboard"
   NEXT_PUBLIC_SUPABASE_ANON_KEY = "set-in-netlify-dashboard"
