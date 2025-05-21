@@ -13,13 +13,13 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+  # Include public _next directory
+  [plugins.inputs]
+  includeFiles = ["_next/**"]
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-
-# Include public _next directory
-[[plugins.inputs]]
-  includeFiles = ["_next/**"]
 
 # Handle all routes for Next.js
 [[redirects]]
@@ -35,8 +35,4 @@
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
-
-# Next.js specific redirects and headers
-[[plugins]]
-  package = "@netlify/plugin-nextjs" 
+  status = 200 
