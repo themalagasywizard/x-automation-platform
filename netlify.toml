@@ -4,12 +4,25 @@
 
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
+  # Set these as placeholders - actual values will be in Netlify environment settings
+  NEXT_PUBLIC_SUPABASE_URL = "set-in-netlify-dashboard"
+  NEXT_PUBLIC_SUPABASE_ANON_KEY = "set-in-netlify-dashboard"
 
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Handle all routes for SPA
+# Handle all routes for Next.js
+[[redirects]]
+  from = "/_next/static/*"
+  to = "/static/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
