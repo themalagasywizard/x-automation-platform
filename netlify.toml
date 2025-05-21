@@ -13,10 +13,6 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-  # Include public _next directory
-  [plugins.inputs]
-  includeFiles = ["_next/**"]
-
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
