@@ -1,33 +1,15 @@
 [build]
   command = "npm run build"
-  publish = ".next/server"
+  publish = "out"
 
 [build.environment]
-  NETLIFY_NEXT_PLUGIN_SKIP = "false"
-  NODE_VERSION = "18.19.0"
-  # Set these as placeholders - actual values will be in Netlify environment settings
-  NEXT_PUBLIC_SUPABASE_URL = "set-in-netlify-dashboard"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "set-in-netlify-dashboard"
-
-# Enable Next.js Runtime
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
 
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Handle all routes for Next.js
-[[redirects]]
-  from = "/_next/static/*"
-  to = "/static/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
+# Handle all routes for SPA
 [[redirects]]
   from = "/*"
   to = "/index.html"
