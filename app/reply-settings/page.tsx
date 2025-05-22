@@ -2,6 +2,9 @@ import { DashboardHeader } from "@/components/dashboard-header"
 import { DashboardShell } from "@/components/dashboard-shell"
 import { ReplySettingsForm } from "@/components/reply-settings-form"
 
+// Mark page as dynamic to prevent prerendering
+export const dynamic = 'force-dynamic'
+
 export default function ReplySettingsPage() {
   return (
     <DashboardShell>
