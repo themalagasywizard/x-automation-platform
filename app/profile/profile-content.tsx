@@ -6,7 +6,6 @@ import { DashboardHeader } from "@/components/dashboard-header"
 import { DashboardShell } from "@/components/dashboard-shell"
 import { ProfileCard } from "@/components/profile-card"
 import { UsageStats } from "@/components/usage-stats"
-import { AuthDebug } from "@/components/auth-debug"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function ProfileContent() {
@@ -47,7 +46,6 @@ export default function ProfileContent() {
         <ProfileCard />
         <UsageStats />
       </div>
-      <AuthDebug />
     </DashboardShell>
   )
 } 

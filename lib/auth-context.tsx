@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (error) {
           console.error('Error getting session:', error)
         } else {
-          console.log('Initial session:', session)
+          console.log('Initial session:', session ? 'Found' : 'None')
           setSession(session)
           setUser(session?.user ?? null)
         }
@@ -49,14 +49,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Listen for auth changes
       const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (event, session) => {
-          console.log('Auth state changed:', event, session)
+          console.log('Auth state changed:', event, session ? 'Has session' : 'No session')
           setSession(session)
           setUser(session?.user ?? null)
           setLoading(false)
           
           // Handle specific auth events
           if (event === 'SIGNED_IN') {
-            console.log('User signed in:', session?.user)
+            console.log('User signed in successfully')
           } else if (event === 'SIGNED_OUT') {
             console.log('User signed out')
           } else if (event === 'TOKEN_REFRESHED') {
@@ -71,14 +71,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithTwitter = async () => {
     try {
-      // Prevent OAuth initiation from callback page
-      if (typeof window !== 'undefined' && window.location.pathname === '/auth/callback') {
-        console.error('Cannot initiate OAuth from callback page')
-        throw new Error('OAuth cannot be initiated from callback page')
+      // Multiple checks to prevent OAuth initiation from callback page
+      if (typeof window !== 'undefined') {
+        const currentPath = window.location.pathname
+        const currentUrl = window.location.href
+        
+        // Prevent OAuth from callback page
+        if (currentPath.includes('/auth/callback') || currentUrl.includes('/auth/callback')) {
+          console.error('OAuth cannot be initiated from callback page:', currentPath)
+          throw new Error('Authentication cannot be started from callback page')
+        }
+        
+        // Prevent OAuth from Supabase callback URL
+        if (currentUrl.includes('supabase.co') || currentUrl.includes('/auth/v1/callback')) {
+          console.error('OAuth cannot be initiated from Supabase callback URL:', currentUrl)
+          throw new Error('Authentication cannot be started from Supabase callback')
+        }
       }
 
       setLoading(true)
-      console.log('Initiating Twitter OAuth from:', window.location.pathname)
+      console.log('Initiating Twitter OAuth from:', window?.location?.pathname || 'unknown')
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'twitter',
@@ -88,11 +100,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       })
       
       if (error) {
-        console.error('Error signing in with Twitter:', error)
+        console.error('OAuth initiation error:', error)
         throw error
       }
       
-      console.log('OAuth redirect initiated:', data)
+      console.log('OAuth redirect URL generated:', data.url)
     } catch (error) {
       console.error('Twitter auth error:', error)
       setLoading(false)
@@ -102,14 +114,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
+      setLoading(true)
       const { error } = await supabase.auth.signOut()
       if (error) {
         console.error('Error signing out:', error)
         throw error
       }
+      console.log('User signed out successfully')
     } catch (error) {
       console.error('Sign out error:', error)
       throw error
+    } finally {
+      setLoading(false)
     }
   }
 
