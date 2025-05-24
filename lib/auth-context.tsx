@@ -71,7 +71,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithTwitter = async () => {
     try {
+      // Prevent OAuth initiation from callback page
+      if (typeof window !== 'undefined' && window.location.pathname === '/auth/callback') {
+        console.error('Cannot initiate OAuth from callback page')
+        throw new Error('OAuth cannot be initiated from callback page')
+      }
+
       setLoading(true)
+      console.log('Initiating Twitter OAuth from:', window.location.pathname)
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'twitter',
         options: {

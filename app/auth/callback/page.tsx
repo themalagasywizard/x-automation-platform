@@ -21,13 +21,40 @@ export default function AuthCallback() {
           return
         }
 
-        // Get the current URL
+        // Get the current URL and hash
         const url = new URL(window.location.href)
-        const code = url.searchParams.get('code')
-        const error = url.searchParams.get('error')
-        const errorDescription = url.searchParams.get('error_description')
+        const urlHash = window.location.hash
+        
+        // Check for parameters in both search params and hash
+        let code = url.searchParams.get('code')
+        let error = url.searchParams.get('error')
+        let errorDescription = url.searchParams.get('error_description')
+        
+        // Also check in the hash fragment (some OAuth flows use this)
+        if (!code && urlHash) {
+          const hashParams = new URLSearchParams(urlHash.substring(1))
+          code = hashParams.get('code')
+          error = hashParams.get('error')
+          errorDescription = hashParams.get('error_description')
+        }
 
-        console.log('Auth callback params:', { code, error, errorDescription })
+        console.log('Auth callback params:', { 
+          code: code ? 'present' : 'missing', 
+          error, 
+          errorDescription,
+          fullURL: window.location.href,
+          hash: urlHash
+        })
+
+        // If no code and no error, this might be a direct visit to callback page
+        if (!code && !error) {
+          console.log('No OAuth parameters found, redirecting to profile')
+          setStatus('Redirecting to profile...')
+          setTimeout(() => {
+            router.push('/profile')
+          }, 1000)
+          return
+        }
 
         if (error) {
           console.error('OAuth error:', error, errorDescription)
@@ -42,28 +69,32 @@ export default function AuthCallback() {
           setStatus('Completing sign in...')
           console.log('Processing OAuth code...')
           
-          const { data, error: sessionError } = await supabase.auth.exchangeCodeForSession(code)
-          
-          if (sessionError) {
-            console.error('Session exchange error:', sessionError)
-            setStatus('Session creation failed')
-            setTimeout(() => {
-              router.push('/profile?error=' + encodeURIComponent(sessionError.message))
-            }, 2000)
-            return
-          }
+          try {
+            const { data, error: sessionError } = await supabase.auth.exchangeCodeForSession(code)
+            
+            if (sessionError) {
+              console.error('Session exchange error:', sessionError)
+              setStatus('Session creation failed')
+              setTimeout(() => {
+                router.push('/profile?error=' + encodeURIComponent(sessionError.message))
+              }, 2000)
+              return
+            }
 
-          console.log('Session created successfully:', data)
-          setStatus('Success! Redirecting...')
-          setTimeout(() => {
+            console.log('Session created successfully:', data)
+            setStatus('Success! Redirecting...')
+            
+            // Wait for the session to be properly set
+            await new Promise(resolve => setTimeout(resolve, 1500))
+            
             router.push('/profile?success=true')
-          }, 1000)
-        } else {
-          console.log('No code parameter, redirecting to profile')
-          setStatus('Redirecting...')
-          setTimeout(() => {
-            router.push('/profile')
-          }, 1000)
+          } catch (exchangeError) {
+            console.error('Code exchange failed:', exchangeError)
+            setStatus('Authentication failed')
+            setTimeout(() => {
+              router.push('/profile?error=' + encodeURIComponent('Code exchange failed'))
+            }, 2000)
+          }
         }
       } catch (error) {
         console.error('Auth callback error:', error)
@@ -82,7 +113,12 @@ export default function AuthCallback() {
       <div className="text-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
         <p className="mt-4 text-lg">{status}</p>
-        <p className="text-sm text-muted-foreground">Please wait while we sign you in.</p>
+        <p className="text-sm text-muted-foreground">
+          {status.includes('failed') ? 
+            'Something went wrong. Redirecting back...' : 
+            'Please wait while we sign you in.'
+          }
+        </p>
       </div>
     </div>
   )
