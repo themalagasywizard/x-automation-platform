@@ -14,8 +14,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ### 1. Supabase Dashboard Configuration
 
 **Authentication > URL Configuration:**
-- Site URL: `https://wondrous-trifle-d3cdd9.netlify.app`
-- Redirect URLs: `https://wondrous-trifle-d3cdd9.netlify.app/**`
+- Site URL: `https://x-automation.netlify.app`
+- Redirect URLs: `https://x-automation.netlify.app/**`
 
 **Authentication > Providers > Twitter:**
 - Enable Twitter provider
@@ -32,10 +32,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 4. Set up OAuth 2.0:
    - App permissions: Read and write
    - Type of App: Web App
-   - Website URL: `https://wondrous-trifle-d3cdd9.netlify.app`
+   - Website URL: `https://x-automation.netlify.app`
    - Callback URLs: `https://dapxfjkdfrcwxfqrdvga.supabase.co/auth/v1/callback`
-   - Privacy Policy URL: `https://wondrous-trifle-d3cdd9.netlify.app` (optional)
-   - Terms of Service URL: `https://wondrous-trifle-d3cdd9.netlify.app` (optional)
+   - Privacy Policy URL: `https://x-automation.netlify.app` (optional)
+   - Terms of Service URL: `https://x-automation.netlify.app` (optional)
 
 5. Save your Client ID and Client Secret
 6. Add them to Supabase Twitter provider settings
@@ -56,10 +56,12 @@ The authentication now works as follows:
 - Verify callback URL in Twitter app matches Supabase exactly
 - Check that Site URL in Supabase matches your Netlify domain exactly
 - Ensure Twitter app has "Read and write" permissions
+- **UPDATE:** Make sure all URLs use the new domain: `https://x-automation.netlify.app`
 
 **React Error #418 (Hydration mismatch):**
 - This is now fixed with client-side rendering guards
 - Disable ad blockers if they're interfering with the auth flow
+- Clear browser cache and reload the page
 
 **Session not being established:**
 - Check browser console for detailed error logs
@@ -69,9 +71,9 @@ The authentication now works as follows:
 **Testing checklist:**
 1. Twitter app is OAuth 2.0 ✓
 2. Callback URL: `https://dapxfjkdfrcwxfqrdvga.supabase.co/auth/v1/callback` ✓
-3. Website URL: `https://wondrous-trifle-d3cdd9.netlify.app` ✓
-4. Site URL in Supabase: `https://wondrous-trifle-d3cdd9.netlify.app` ✓
-5. Redirect URLs in Supabase: `https://wondrous-trifle-d3cdd9.netlify.app/**` ✓
+3. Website URL: `https://x-automation.netlify.app` ✓
+4. Site URL in Supabase: `https://x-automation.netlify.app` ✓
+5. Redirect URLs in Supabase: `https://x-automation.netlify.app/**` ✓
 6. Environment variables set in Netlify ✓
 
 ## Important Notes
@@ -79,6 +81,7 @@ The authentication now works as follows:
 - **DO NOT** modify Supabase's default callback URL
 - Use OAuth 2.0 (not OAuth 1.0a) in Twitter Developer Portal
 - Make sure all URLs match exactly (including https://)
+- **CRITICAL:** Update all URLs to use `https://x-automation.netlify.app`
 - After making changes, wait a few minutes for Twitter changes to propagate
 - Check browser console for detailed error logs during authentication
 

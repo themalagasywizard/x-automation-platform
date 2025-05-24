@@ -42,28 +42,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    getSession()
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      getSession()
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event, session)
-        setSession(session)
-        setUser(session?.user ?? null)
-        setLoading(false)
-        
-        // Handle specific auth events
-        if (event === 'SIGNED_IN') {
-          console.log('User signed in:', session?.user)
-        } else if (event === 'SIGNED_OUT') {
-          console.log('User signed out')
-        } else if (event === 'TOKEN_REFRESHED') {
-          console.log('Token refreshed')
+      // Listen for auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          console.log('Auth state changed:', event, session)
+          setSession(session)
+          setUser(session?.user ?? null)
+          setLoading(false)
+          
+          // Handle specific auth events
+          if (event === 'SIGNED_IN') {
+            console.log('User signed in:', session?.user)
+          } else if (event === 'SIGNED_OUT') {
+            console.log('User signed out')
+          } else if (event === 'TOKEN_REFRESHED') {
+            console.log('Token refreshed')
+          }
         }
-      }
-    )
+      )
 
-    return () => subscription.unsubscribe()
+      return () => subscription.unsubscribe()
+    }
   }, [])
 
   const signInWithTwitter = async () => {
@@ -112,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Prevent hydration issues by not rendering until client-side
   if (!isClient) {
-    return null
+    return <div suppressHydrationWarning>{children}</div>
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
