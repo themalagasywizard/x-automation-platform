@@ -29,7 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
+        console.log('Auth state changed:', event, session)
         setSession(session)
         setUser(session?.user ?? null)
         setLoading(false)
@@ -40,14 +41,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signInWithTwitter = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'twitter',
-      options: {
-        redirectTo: `${window.location.origin}/profile`,
-      },
-    })
-    if (error) {
-      console.error('Error signing in with Twitter:', error)
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'twitter',
+        options: {
+          redirectTo: `${window.location.origin}/profile`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      })
+      
+      if (error) {
+        console.error('Error signing in with Twitter:', error)
+        throw error
+      }
+      
+      console.log('OAuth redirect data:', data)
+    } catch (error) {
+      console.error('Twitter auth error:', error)
       throw error
     }
   }
