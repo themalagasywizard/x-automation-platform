@@ -18,22 +18,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
+    // Fix hydration issues
+    setIsClient(true)
+    
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
+    const getSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (error) {
+          console.error('Error getting session:', error)
+        } else {
+          console.log('Initial session:', session)
+          setSession(session)
+          setUser(session?.user ?? null)
+        }
+      } catch (error) {
+        console.error('Session fetch error:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    getSession()
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         console.log('Auth state changed:', event, session)
         setSession(session)
         setUser(session?.user ?? null)
         setLoading(false)
+        
+        // Handle specific auth events
+        if (event === 'SIGNED_IN') {
+          console.log('User signed in:', session?.user)
+        } else if (event === 'SIGNED_OUT') {
+          console.log('User signed out')
+        } else if (event === 'TOKEN_REFRESHED') {
+          console.log('Token refreshed')
+        }
       }
     )
 
@@ -42,14 +68,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithTwitter = async () => {
     try {
+      setLoading(true)
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'twitter',
         options: {
-          redirectTo: `${window.location.origin}/profile`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       })
       
@@ -58,17 +81,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
       
-      console.log('OAuth redirect data:', data)
+      console.log('OAuth redirect initiated:', data)
     } catch (error) {
       console.error('Twitter auth error:', error)
+      setLoading(false)
       throw error
     }
   }
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) {
-      console.error('Error signing out:', error)
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Error signing out:', error)
+        throw error
+      }
+    } catch (error) {
+      console.error('Sign out error:', error)
       throw error
     }
   }
@@ -79,6 +108,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loading,
     signInWithTwitter,
     signOut,
+  }
+
+  // Prevent hydration issues by not rendering until client-side
+  if (!isClient) {
+    return null
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

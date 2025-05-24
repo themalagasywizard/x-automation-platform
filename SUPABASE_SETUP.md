@@ -40,7 +40,16 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 5. Save your Client ID and Client Secret
 6. Add them to Supabase Twitter provider settings
 
-### 3. Common Issues & Troubleshooting
+### 3. Authentication Flow
+
+The authentication now works as follows:
+1. User clicks "Connect X Account" → redirects to Twitter
+2. User authorizes on Twitter → Twitter redirects to Supabase callback
+3. Supabase processes auth → redirects to `/auth/callback` page
+4. Callback page handles the OAuth code exchange → redirects to `/profile`
+5. Profile page shows success/error message
+
+### 4. Common Issues & Troubleshooting
 
 **"requested path is invalid" error:**
 - Ensure you're using OAuth 2.0 (not 1.0a) in Twitter Developer Portal
@@ -48,12 +57,22 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 - Check that Site URL in Supabase matches your Netlify domain exactly
 - Ensure Twitter app has "Read and write" permissions
 
+**React Error #418 (Hydration mismatch):**
+- This is now fixed with client-side rendering guards
+- Disable ad blockers if they're interfering with the auth flow
+
+**Session not being established:**
+- Check browser console for detailed error logs
+- Verify environment variables are properly set in Netlify
+- Use the debug component on profile page to see detailed auth state
+
 **Testing checklist:**
 1. Twitter app is OAuth 2.0 ✓
 2. Callback URL: `https://dapxfjkdfrcwxfqrdvga.supabase.co/auth/v1/callback` ✓
 3. Website URL: `https://wondrous-trifle-d3cdd9.netlify.app` ✓
 4. Site URL in Supabase: `https://wondrous-trifle-d3cdd9.netlify.app` ✓
 5. Redirect URLs in Supabase: `https://wondrous-trifle-d3cdd9.netlify.app/**` ✓
+6. Environment variables set in Netlify ✓
 
 ## Important Notes
 
@@ -61,6 +80,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 - Use OAuth 2.0 (not OAuth 1.0a) in Twitter Developer Portal
 - Make sure all URLs match exactly (including https://)
 - After making changes, wait a few minutes for Twitter changes to propagate
+- Check browser console for detailed error logs during authentication
 
 ## Features Implemented
 
@@ -72,6 +92,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 - ✅ Automatic session management
 - ✅ Protected routes for scheduler and reply settings
 - ✅ Enhanced error logging and debugging
+- ✅ Proper OAuth callback handling
+- ✅ Hydration issue fixes
+- ✅ Success/error message display
 
 ## Usage
 
@@ -79,9 +102,10 @@ Users can now:
 1. Visit the Profile page
 2. Click "Connect X Account" to authenticate
 3. Complete OAuth flow through X (handled by Supabase)
-4. Automatically redirected back to the Profile page
-5. View their connected account information
-6. Access protected features (scheduler, reply settings)
-7. Disconnect their account if needed
+4. Go through callback page for proper session establishment
+5. Automatically redirected back to the Profile page with success message
+6. View their connected account information
+7. Access protected features (scheduler, reply settings)
+8. Disconnect their account if needed
 
 The authentication state is managed globally and will persist across page reloads. 
