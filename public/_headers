@@ -1,5 +1,8 @@
-# No CSP headers - completely permissive 
-
 /*
-  Content-Security-Policy: default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;
-*/ 
+  Content-Security-Policy: default-src * 'unsafe-inline' 'unsafe-eval' data: blob:
+
+/auth/callback
+  Content-Security-Policy: default-src * 'unsafe-inline' 'unsafe-eval' data: blob:
+
+/profile
+  Content-Security-Policy: default-src * 'unsafe-inline' 'unsafe-eval' data: blob: 

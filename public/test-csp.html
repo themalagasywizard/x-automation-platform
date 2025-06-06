@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSP Test</title>
+</head>
+<body>
+    <h1>CSP Test Page</h1>
+    <script>
+        // This should work if unsafe-eval is allowed
+        try {
+            eval('console.log("Eval works! CSP allows unsafe-eval")');
+            document.body.innerHTML += '<p style="color: green;">✅ CSP allows eval - OAuth should work</p>';
+        } catch (e) {
+            console.error('Eval blocked by CSP:', e);
+            document.body.innerHTML += '<p style="color: red;">❌ CSP blocks eval - OAuth will fail</p>';
+        }
+    </script>
+</body>
+</html> 
