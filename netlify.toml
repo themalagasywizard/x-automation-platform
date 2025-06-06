@@ -9,11 +9,11 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Minimal CSP to allow Supabase/OAuth
+# Ultra-permissive CSP to override any external CSP
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https:;"
+    Content-Security-Policy = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;"
 
 # Handle all routes for SPA
 [[redirects]]
