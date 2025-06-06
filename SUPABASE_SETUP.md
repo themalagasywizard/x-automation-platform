@@ -52,11 +52,14 @@ The authentication now works as follows:
 ### 4. Common Issues & Troubleshooting
 
 **"requested path is invalid" error:**
-- Ensure you're using OAuth 2.0 (not 1.0a) in Twitter Developer Portal
-- Verify callback URL in Twitter app matches Supabase exactly
-- Check that Site URL in Supabase matches your Netlify domain exactly
+- **CRITICAL:** Ensure you're using OAuth 2.0 (not 1.0a) in Twitter Developer Portal
+- Verify callback URL in Twitter app matches Supabase exactly: `https://dapxfjkdfrcwxfqrdvga.supabase.co/auth/v1/callback`
+- Check that Website URL matches exactly: `https://x-automation.netlify.app`
 - Ensure Twitter app has "Read and write" permissions
-- **UPDATE:** Make sure all URLs use the new domain: `https://x-automation.netlify.app`
+- **IMPORTANT:** App must be approved for production use if not in development
+- Try recreating the Twitter app if all settings appear correct
+- Wait 15-30 minutes after making changes for Twitter to propagate
+- **Enhanced OAuth:** Now includes additional scopes and PKCE flow for better compatibility
 
 **React Error #418 (Hydration mismatch):**
 - This is now fixed with client-side rendering guards
@@ -98,6 +101,9 @@ The authentication now works as follows:
 - ✅ Proper OAuth callback handling
 - ✅ Hydration issue fixes
 - ✅ Success/error message display
+- ✅ PKCE flow implementation for enhanced security
+- ✅ Enhanced OAuth scopes for better Twitter compatibility
+- ✅ Debug mode enabled for detailed troubleshooting
 
 ## Usage
 
@@ -111,4 +117,50 @@ Users can now:
 7. Access protected features (scheduler, reply settings)
 8. Disconnect their account if needed
 
-The authentication state is managed globally and will persist across page reloads. 
+The authentication state is managed globally and will persist across page reloads.
+
+## Advanced Troubleshooting for "requested path is invalid"
+
+If you're still getting this error after checking all configurations:
+
+### 1. **Twitter App Recreation Method**
+Sometimes Twitter apps get into a corrupted state. Try this:
+1. Create a brand new Twitter OAuth 2.0 app
+2. Use different app name than before
+3. Copy the new Client ID and Secret to Supabase
+4. Test immediately after creation
+
+### 2. **Twitter App Status Check**
+1. Go to Twitter Developer Portal
+2. Check if your app status shows "Approved" or "In Review"
+3. If "In Review", OAuth won't work until approved
+4. If you need immediate testing, apply for Elevated access
+
+### 3. **URL Validation**
+Copy these exact URLs (no modifications):
+- **Callback URL**: `https://dapxfjkdfrcwxfqrdvga.supabase.co/auth/v1/callback`
+- **Website URL**: `https://x-automation.netlify.app`
+
+### 4. **Browser Testing**
+1. Clear all browser data for both x-automation.netlify.app and twitter.com
+2. Try in incognito/private browsing mode
+3. Disable any browser extensions temporarily
+4. Try a different browser entirely
+
+### 5. **Timing Issues**
+- Wait 30 minutes after any Twitter Developer Portal changes
+- Twitter's OAuth system can be slow to propagate changes
+- Try the OAuth flow again after waiting
+
+### 6. **Alternative Diagnostic**
+Check the browser's Network tab during OAuth to see:
+- What URL Twitter redirects to
+- Any 400/401/403 errors from Twitter's servers
+- Compare redirect URL with your configured callback
+
+### 7. **Last Resort**
+If nothing works:
+1. Delete the Twitter app entirely
+2. Wait 24 hours
+3. Create new app with different name
+4. Use OAuth 2.0 from the start (don't convert from 1.0a) 

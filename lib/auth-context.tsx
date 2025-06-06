@@ -96,6 +96,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         provider: 'twitter',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          scopes: 'tweet.read users.read tweet.write offline.access',
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
         },
       })
       
@@ -105,6 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       
       console.log('OAuth redirect URL generated:', data.url)
+      console.log('OAuth data:', data)
     } catch (error) {
       console.error('Twitter auth error:', error)
       setLoading(false)
