@@ -11,10 +11,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "X Automation Platform",
   description: "Automate your X interactions with AI-powered replies and scheduling",
-  generator: 'v0.dev',
-  other: {
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://dapxfjkdfrcwxfqrdvga.supabase.co https://twitter.com https://x.com; connect-src 'self' https://dapxfjkdfrcwxfqrdvga.supabase.co https://api.twitter.com https://upload.twitter.com https://twitter.com https://x.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self' https://dapxfjkdfrcwxfqrdvga.supabase.co; frame-ancestors 'none'; frame-src https://twitter.com https://x.com https://dapxfjkdfrcwxfqrdvga.supabase.co;"
-  }
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -24,9 +21,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://dapxfjkdfrcwxfqrdvga.supabase.co https://twitter.com https://x.com; connect-src 'self' https://dapxfjkdfrcwxfqrdvga.supabase.co https://api.twitter.com https://upload.twitter.com https://twitter.com https://x.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self' https://dapxfjkdfrcwxfqrdvga.supabase.co; frame-ancestors 'none'; frame-src https://twitter.com https://x.com https://dapxfjkdfrcwxfqrdvga.supabase.co;" />
-      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
