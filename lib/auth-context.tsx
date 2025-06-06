@@ -100,7 +100,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           queryParams: {
             access_type: 'offline',
             prompt: 'consent'
-          }
+          },
+          skipBrowserRedirect: true,
         },
       })
       
@@ -109,8 +110,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
       
-      console.log('OAuth redirect URL generated:', data.url)
-      console.log('OAuth data:', data)
+      if (data.url) {
+        console.log('Manual redirect to:', data.url)
+        window.location.href = data.url
+      } else {
+        console.error('No URL returned from signInWithOAuth')
+        throw new Error('Could not get OAuth URL')
+      }
     } catch (error) {
       console.error('Twitter auth error:', error)
       setLoading(false)
