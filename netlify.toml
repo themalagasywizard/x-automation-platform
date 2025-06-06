@@ -9,13 +9,11 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Temporarily disable CSP to test OAuth
-# [[headers]]
-#   for = "/*"
-#   [headers.values]
-#     X-Frame-Options = "DENY"
-#     X-Content-Type-Options = "nosniff"
-#     Referrer-Policy = "strict-origin-when-cross-origin"
+# Ultra-permissive CSP for OAuth testing
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src *; script-src * 'unsafe-eval' 'unsafe-inline'; style-src * 'unsafe-inline'; img-src * data: blob:; font-src * data:; connect-src *; media-src *; object-src *; child-src *; frame-src *; worker-src *; frame-ancestors *; form-action *; base-uri *;"
 
 # Handle all routes for SPA
 [[redirects]]
