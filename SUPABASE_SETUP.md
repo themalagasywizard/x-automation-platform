@@ -66,6 +66,12 @@ The authentication now works as follows:
 - Disable ad blockers if they're interfering with the auth flow
 - Clear browser cache and reload the page
 
+**Content Security Policy (CSP) blocking eval:**
+- Fixed with custom CSP headers in netlify.toml and next.config.mjs
+- Allows 'unsafe-eval' for Supabase OAuth operations
+- Includes specific domains for Twitter API and Supabase
+- Maintains security while enabling OAuth functionality
+
 **Session not being established:**
 - Check browser console for detailed error logs
 - Verify environment variables are properly set in Netlify
@@ -104,6 +110,8 @@ The authentication now works as follows:
 - ✅ PKCE flow implementation for enhanced security
 - ✅ Enhanced OAuth scopes for better Twitter compatibility
 - ✅ Debug mode enabled for detailed troubleshooting
+- ✅ CSP headers configured for OAuth compatibility
+- ✅ Content Security Policy allows required JavaScript operations
 
 ## Usage
 
