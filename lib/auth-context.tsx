@@ -110,11 +110,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw error
       }
       
+      console.log('OAuth response data:', data)
+      console.log('OAuth URL length:', data.url ? data.url.length : 'No URL')
+      console.log('OAuth URL preview:', data.url ? data.url.substring(0, 200) + '...' : 'No URL')
+      
       if (data.url) {
-        console.log('Manual redirect to:', data.url)
-        window.location.href = data.url
+        console.log('About to redirect to:', data.url)
+        
+        // Try multiple redirect methods for maximum compatibility
+        try {
+          // Method 1: Direct assignment
+          window.location.href = data.url
+        } catch (redirectError) {
+          console.error('Direct redirect failed:', redirectError)
+          
+          // Method 2: Using replace
+          try {
+            window.location.replace(data.url)
+          } catch (replaceError) {
+            console.error('Replace redirect failed:', replaceError)
+            
+            // Method 3: Using assign
+            window.location.assign(data.url)
+          }
+        }
       } else {
         console.error('No URL returned from signInWithOAuth')
+        console.log('Full data object:', JSON.stringify(data, null, 2))
         throw new Error('Could not get OAuth URL')
       }
     } catch (error) {
